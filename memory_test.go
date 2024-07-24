@@ -1,13 +1,14 @@
-package cache
+package cache_test
 
 import (
 	"testing"
 	"time"
 
+	cache "github.com/pobyzaarif/go-cache"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCache(t *testing.T) {
+func TestMemoryCache(t *testing.T) {
 	timeNow := time.Now()
 	tc := map[string]interface{}{
 		"a": 1,
@@ -19,7 +20,7 @@ func TestCache(t *testing.T) {
 		"h": map[string]int{"1": 2, "3": 4},
 		"i": 1,
 	}
-	memCache, err := NewMemoryARCCacheRepository(len(tc) + 1) // increase 1 the size to avoid overcapacity of the cache because lru, lfu, and arc will remove unpopular keys automatically based on each algorithm
+	memCache, err := cache.NewMemoryARCCacheRepository(len(tc) + 1) // increase 1 the size to avoid overcapacity of the cache because lru, lfu, and arc will remove unpopular keys automatically based on each algorithm
 	assert.NoError(t, err)
 
 	var aa int
@@ -77,4 +78,10 @@ func TestCache(t *testing.T) {
 	err = memCache.Get("h", &hh)
 	assert.NoError(t, err)
 	assert.Equal(t, tc["h"], hh)
+
+	// h test negative case
+	var hhh map[int]string
+	err = memCache.Get("h", &hhh)
+	assert.Error(t, err)
+	assert.NotEqual(t, tc["h"], hhh)
 }

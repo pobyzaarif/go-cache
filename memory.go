@@ -51,9 +51,8 @@ func (memoryCache *MemoryARCCacheRepository) Get(key string, data interface{}) (
 	if value != "" {
 		err = json.Unmarshal([]byte(value), &data)
 		if err != nil {
-			return
+			return err
 		}
-		return
 	}
 
 	return nil
