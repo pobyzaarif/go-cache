@@ -3,6 +3,7 @@ package cache_test
 import (
 	"context"
 	"log"
+	"os"
 	"testing"
 	"time"
 
@@ -25,8 +26,11 @@ func TestRedisCache(t *testing.T) {
 	}
 
 	// Create a new Redis client
-	url := "redis://localhost:6379/0?protocol=3"
-	opts, err := redis.ParseURL(url)
+	redisURL := os.Getenv("GOCACHE_REDIS_URL")
+	if redisURL == "" {
+		redisURL = "redis://localhost:6379/0?protocol=3"
+	}
+	opts, err := redis.ParseURL(redisURL)
 	if err != nil {
 		log.Fatalf("Could not connect to Redis: %v", err)
 	}
